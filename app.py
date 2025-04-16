@@ -23,6 +23,49 @@ def load_checkpoints():
     except FileNotFoundError:
         return set()
 
+def find_category_id(category_name):
+    """Find the category ID based on the category name."""
+    categories = {
+        1: "Antivirus firewall",
+        2: "Audio / Video editors",
+        3: "Backup",
+        4: "Common Software",
+        5: "Compressor",
+        6: "Converter",
+        7: "Copy CD DVD Blue-Ray",
+        8: "Data Recovery",
+        9: "Dictionary",
+        10: "Disk ISO archive editor",
+        11: "Driver",
+        12: "E-Learning",
+        13: "Engineering specialized",
+        14: "File Manager",
+        15: "File Manager",
+        16: "Graphic",
+        17: "Hard Disk partition manager",
+        18: "Internet",
+        19: "Mobile",
+        20: "Mobile Tools",
+        21: "Network / Server",
+        22: "Office PDF",
+        23: "Operating System",
+        24: "Optimizer",
+        25: "Player",
+        26: "Programming",
+        27: "System",
+        28: "Theme",
+        29: "Utility",
+        30: "Video Tutorial",
+        31: "WordPress Theme"
+    }
+    category_name_first_part = category_name.split(",")[0].strip().lower()
+    for category_id, name in categories.items():
+        category_first_part = name.split(",")[0].strip().lower()
+        if category_first_part == category_name_first_part:
+            return category_id
+    return None
+
+
 if __name__ == "__main__":
     processed_urls = load_checkpoints()
 
@@ -42,6 +85,13 @@ if __name__ == "__main__":
                 print(log_message)
                 logging.info(log_message)
                 info = scrapper_bot.scrape_page_info(url)
+                category_id = find_category_id(info["category"])
+                if category_id is None:
+                    log_message = f"❌ Category not found for URL: {url}"
+                    print(log_message)
+                    logging.error(log_message)
+                    category_id = 32  # Default to "Other" category if not found
+                    continue
 
                 # Map scraped data to the new format
                 slug = url.replace("https://downloadlynet.ir/", "").replace("/", "-").rstrip("-")
@@ -52,7 +102,7 @@ if __name__ == "__main__":
                     "keywords": info["tags"],
                     "summary": info["title"],
                     "content": info["content"],
-                    "category_id": 1,
+                    "category_id": category_id,
                     "post_type": 'article',
                     "video_embed_code": "",
                     "status": 1,

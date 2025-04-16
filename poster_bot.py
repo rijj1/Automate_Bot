@@ -10,6 +10,11 @@ mysql_config = {
     "password": "",
     "database": "blog_web"
 }
+cookies = {
+    'vr_session': 'cqlj5bpncfbkjurs70l4t8elluta9b1h',
+    'vr_csrftoken': 'ff40a5cd8e1a42763ee8ff1c3921ad26'
+}
+
 CHECKPOINT_FILE = "checkpoint.txt"
 FAILED_UPLOADS_FILE = "failed_uploads.txt"
 
@@ -71,10 +76,6 @@ def process_data(data):
     api_payload = {
         "postId": post_id,
         "tags": tags_json
-    }
-    cookies = {
-        'vr_session': 'cqlj5bpncfbkjurs70l4t8elluta9b1h',
-        'vr_csrftoken': 'ff40a5cd8e1a42763ee8ff1c3921ad26'
     }
     
     try:
