@@ -3,17 +3,13 @@ from mysql.connector import Error
 import json
 import requests
 
-api_url = "http://localhost/api/post-data-insertion"
-mysql_config = {
-    "host": "localhost",
-    "user": "root",
-    "password": "",
-    "database": "blog_web"
-}
-cookies = {
-    'vr_session': 'cqlj5bpncfbkjurs70l4t8elluta9b1h',
-    'vr_csrftoken': 'ff40a5cd8e1a42763ee8ff1c3921ad26'
-}
+# Load configuration from config.json
+with open("config.json", "r") as config_file:
+    config = json.load(config_file)
+
+api_url = config["api_url"]
+mysql_config = config["mysql_config"]
+cookies = config["cookies"]
 
 CHECKPOINT_FILE = "checkpoint.txt"
 FAILED_UPLOADS_FILE = "failed_uploads.txt"

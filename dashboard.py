@@ -41,11 +41,6 @@ def run_bot():
     threading.Thread(target=run_scraping_bot).start()
     return redirect('/')
 
-@app.route('/stop_bot')
-def stop_bot():
-    """Stop the bot by killing the process."""
-    return redirect('/')
-
 @app.route('/download_logs')
 def download_logs():
     """Download the complete log file."""
@@ -65,6 +60,7 @@ def download_checkpoints():
 def edit_file(file_type):
     """Edit a file dynamically based on the file type."""
     file_paths = {
+        'config' : 'config.json',
         'sitemap': 'sitemap.csv',
         'failed_uploads': failed_uploads_file,
         'checkpoints': checkpoint_file

@@ -1,0 +1,13 @@
+{
+    "api_url": "http://localhost/api/post-data-insertion",
+    "mysql_config": {
+        "host": "localhost",
+        "user": "root",
+        "password": "",
+        "database": "blog_web"
+    },
+    "cookies": {
+        "vr_session": "cqlj5bpncfbkjurs70l4t8elluta9b1h",
+        "vr_csrftoken": "ff40a5cd8e1a42763ee8ff1c3921ad26"
+    }
+}
