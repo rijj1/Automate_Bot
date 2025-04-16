@@ -252,34 +252,28 @@
         <h2>Progress</h2>
         <div class="stats">
             <div class="stat-box">
-                <h3>{{ crawled_urls }}</h3>
+                <h3 id="crawled-urls">{{ crawled_urls }}</h3>
                 <p>URLs Completed</p>
             </div>
             <div class="stat-box">
-                <h3>{{ total_urls }}</h3>
+                <h3 id="total-urls">{{ total_urls }}</h3>
                 <p>Total Sitemaps</p>
             </div>
             <div class="stat-box">
-                <h3>{{ failed_urls }}</h3>
+                <h3 id="failed-urls">{{ failed_urls }}</h3>
                 <p>Failed Uploads</p>
             </div>
         </div>
     </div>
 
-    <!-- Logs Section -->
     <div class="logs-section" id="logs-section">
         <div class="logs-bar">
             <h2>Logs</h2>
             <a class="download-button" href="/download_logs">Download Logs</a>
         </div>
-        <div class="logs">
-            {% for log in logs.split('\n') %}
-                <div class="log-line">{{ log }}</div>
-            {% endfor %}
+        <div class="logs" id="logs-container">
         </div>
     </div>
-
-    <!-- Toggle Logs Button -->
     <button class="toggle-logs-button" onclick="toggleLogs()">Show Logs</button>
 </div>
 
@@ -373,6 +367,41 @@
         },
         retina_detect: true
     });
+
+    function fetchLogs() {
+        fetch('/get_logs')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('logs-container').innerHTML = data
+                    .split('\n')
+                    .map(line => `<div class="log-line">${line}</div>`)
+                    .join('');
+            })
+            .catch(error => console.error('Error fetching logs:', error));
+    }
+
+    // Fetch logs every 5 seconds
+    setInterval(fetchLogs, 5000);
+
+    // Initial fetch
+    fetchLogs();
+
+    function fetchStats() {
+        fetch('/get_stats')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('crawled-urls').textContent = data.crawled_urls;
+                document.getElementById('total-urls').textContent = data.total_urls;
+                document.getElementById('failed-urls').textContent = data.failed_urls;
+            })
+            .catch(error => console.error('Error fetching stats:', error));
+    }
+
+    // Fetch stats every 5 seconds
+    setInterval(fetchStats, 5000);
+
+    // Initial fetch
+    fetchStats();
 </script>
 
 </body>

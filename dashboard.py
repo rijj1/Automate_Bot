@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, send_file
 import subprocess
 import os
 import threading
+from flask import jsonify
 
 app = Flask(__name__)
 
@@ -93,6 +94,19 @@ def edit_file(file_type):
 def get_logs():
     """Serve the last 12 lines of logs dynamically."""
     return read_last_lines(log_file, num_lines=12)
+
+@app.route('/get_stats')
+def get_stats():
+    """Serve the statistics dynamically."""
+    total_urls = len(open('sitemap.csv').readlines())
+    crawled_urls = len(open(checkpoint_file).readlines()) if os.path.exists(checkpoint_file) else 0
+    failed_urls = len(open(failed_uploads_file).readlines()) if os.path.exists(failed_uploads_file) else 0
+
+    return jsonify({
+        'crawled_urls': crawled_urls,
+        'total_urls': total_urls,
+        'failed_urls': failed_urls
+    })
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
