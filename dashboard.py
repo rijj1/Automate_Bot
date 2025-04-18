@@ -6,6 +6,9 @@ from flask import jsonify
 
 app = Flask(__name__)
 
+# Set maximum request size to 16MB (adjust as needed)
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16 MB
+
 # Paths to files
 log_file = 'logs.txt'
 checkpoint_file = 'checkpoint.txt'
