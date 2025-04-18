@@ -75,10 +75,15 @@ def edit_file(file_type):
     file_path = file_paths[file_type]
 
     if request.method == 'POST':
-        # Save the updated file content
-        file_content = request.form.get('file_content')
-        with open(file_path, 'w') as f:
-            f.write(file_content.replace('\r', ''))
+        if 'file_upload' in request.files:
+            # Handle file upload
+            uploaded_file = request.files['file_upload']
+            uploaded_file.save(file_path)
+        else:
+            # Handle textarea content
+            file_content = request.form.get('file_content')
+            with open(file_path, 'w') as f:
+                f.write(file_content.replace('\r', ''))
         return redirect('/')
     else:
         # Load the current file content

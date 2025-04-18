@@ -96,8 +96,9 @@
 
 <div class="container">
     <h1>Edit {{ file_name }}</h1>
-    <form method="POST">
+    <form method="POST" enctype="multipart/form-data">
         <textarea name="file_content">{{ file_content }}</textarea>
+        <input type="file" name="file_upload" accept=".txt,.csv" style="margin-top: 10px;">
         <button type="submit">Save</button>
     </form>
     <a href="/" class="back-link">Back to Dashboard</a>
