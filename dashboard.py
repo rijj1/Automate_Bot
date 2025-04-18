@@ -63,7 +63,7 @@ def download_checkpoints():
 def edit_file(file_type):
     """Edit a file dynamically based on the file type."""
     file_paths = {
-        'config' : 'config.json',
+        'config': 'config.json',
         'sitemap': 'sitemap.csv',
         'failed_uploads': failed_uploads_file,
         'checkpoints': checkpoint_file
@@ -75,15 +75,17 @@ def edit_file(file_type):
     file_path = file_paths[file_type]
 
     if request.method == 'POST':
-        if 'file_upload' in request.files:
+        if 'file_upload' in request.files and request.files['file_upload'].filename:
             # Handle file upload
             uploaded_file = request.files['file_upload']
             uploaded_file.save(file_path)
-        else:
+        elif 'file_content' in request.form and request.form['file_content'].strip():
             # Handle textarea content
             file_content = request.form.get('file_content')
             with open(file_path, 'w') as f:
                 f.write(file_content.replace('\r', ''))
+        else:
+            return "No valid input provided", 400
         return redirect('/')
     else:
         # Load the current file content
