@@ -85,6 +85,12 @@ if __name__ == "__main__":
                 print(log_message)
                 logging.info(log_message)
                 info = scrapper_bot.scrape_page_info(url)
+                if info is None:  # Skip if scraping failed
+                    log_message = f"❌ Failed to scrape URL: {url}"
+                    print(log_message)
+                    logging.error(log_message)
+                    continue
+
                 category_id = find_category_id(info["category"])
                 if category_id is None:
                     log_message = f"❌ Category not found for URL: {url}"

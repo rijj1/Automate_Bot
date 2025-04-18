@@ -2,6 +2,7 @@ import requests
 import bs4
 import re
 import pandas as pd
+import poster_bot  # Import to use save_failed_upload
 
 USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36"
 REQUEST_HEADER = {
@@ -10,8 +11,17 @@ REQUEST_HEADER = {
 }
 
 def get_page_html(url):
-    res = requests.get(url=url, headers=REQUEST_HEADER, timeout=10)
-    return res.content
+    try:
+        res = requests.get(url=url, headers=REQUEST_HEADER, timeout=10)
+        return res.content
+    except requests.exceptions.ReadTimeout:
+        print(f"Timeout occurred for URL: {url}")
+        poster_bot.save_failed_upload(url)  # Add to failed uploads
+        return None
+    except Exception as e:
+        print(f"Error fetching URL {url}: {e}")
+        poster_bot.save_failed_upload(url)  # Add to failed uploads
+        return None
 
 def get_page_title(soup):
     try:
