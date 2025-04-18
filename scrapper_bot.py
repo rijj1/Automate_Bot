@@ -102,6 +102,10 @@ def get_content(soup):
 
 def scrape_page_info(url):
     html = get_page_html(url)
+    if html is None:  # Check if the HTML content is None
+        print(f"Failed to fetch HTML for URL: {url}")
+        return None
+
     soup = bs4.BeautifulSoup(html, 'lxml')
     title = get_page_title(soup)
     category = get_category(soup)
@@ -117,7 +121,6 @@ def scrape_page_info(url):
         'content': content,
         'scrap_url': url
     }
-
 
 def extract_post_links_from_sitemap(sitemap_url):
     print(f"🔍 Reading sitemap: {sitemap_url}")

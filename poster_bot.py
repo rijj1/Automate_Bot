@@ -27,7 +27,8 @@ def process_data(data):
         connection = mysql.connector.connect(**mysql_config)
         cursor = connection.cursor()
 
-        cursor.execute("SELECT id FROM posts WHERE slug = %s", (data['slug']))
+        # Ensure the parameter is passed as a tuple
+        cursor.execute("SELECT id FROM posts WHERE slug = %s", (data['slug'],))  # Add a comma to make it a tuple
         existing_record = cursor.fetchone()
 
         if existing_record:
@@ -45,7 +46,7 @@ def process_data(data):
                 data['category_id'],
                 data['image_url'],
                 data['image_description'],
-                data['slug']
+                data['slug']  # Ensure this is part of the tuple
             ))
             connection.commit()
             post_id = existing_record[0]
