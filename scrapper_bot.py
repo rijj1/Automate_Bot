@@ -80,7 +80,7 @@ def get_content(soup):
 
         # Remove unwanted line: "File password" line
         for h5 in content_block.find_all("h5"):
-            if "File password" in h5.text and "downloadly.ir" in h5.text:
+            if ("File password" in h5.text and "downloadly.ir" in h5.text) or ("Password file(s):" in h5.text and "www.downloadly.ir" in h5.text):
                 h5.decompose()
 
         # Remove unwanted heading: "Description" <h2>
