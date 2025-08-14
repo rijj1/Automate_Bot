@@ -1,5 +1,5 @@
 import mysql.connector
-from mysql.connector import Error
+from mysql.connector import Error, pooling
 import json
 import requests
 
@@ -14,6 +14,13 @@ cookies = config["cookies"]
 CHECKPOINT_FILE = "checkpoint.txt"
 FAILED_UPLOADS_FILE = "failed_uploads.txt"
 
+# Initialize a connection pool
+connection_pool = pooling.MySQLConnectionPool(
+    pool_name="mypool",
+    pool_size=5,
+    **mysql_config
+)
+
 def save_checkpoint(url):
     with open(CHECKPOINT_FILE, "a") as f:
         f.write(url + "\n")
@@ -24,7 +31,8 @@ def save_failed_upload(url):
 
 def process_data(data):
     try:
-        connection = mysql.connector.connect(**mysql_config)
+        # Get a connection from the pool
+        connection = connection_pool.get_connection()
         cursor = connection.cursor()
 
         # Ensure the parameter is passed as a tuple
@@ -87,8 +95,7 @@ def process_data(data):
     finally:
         if cursor:
             cursor.close()
-        if connection:
-            connection.close()
+        # Do not explicitly close the connection; it will be returned to the pool automatically
 
     # Convert tags to JSON format
     tags = data['tags']
