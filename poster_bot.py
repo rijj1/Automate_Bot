@@ -17,7 +17,7 @@ FAILED_UPLOADS_FILE = "failed_uploads.txt"
 # Initialize a connection pool
 connection_pool = pooling.MySQLConnectionPool(
     pool_name="mypool",
-    pool_size=5,
+    pool_size=10,  # Increased pool size
     **mysql_config
 )
 
@@ -30,13 +30,15 @@ def save_failed_upload(url):
         f.write(url + "\n")
 
 def process_data(data):
+    connection = None
+    cursor = None
     try:
         # Get a connection from the pool
         connection = connection_pool.get_connection()
         cursor = connection.cursor()
 
         # Ensure the parameter is passed as a tuple
-        cursor.execute("SELECT id FROM posts WHERE slug = %s", (data['slug'],))  # Add a comma to make it a tuple
+        cursor.execute("SELECT id FROM posts WHERE slug = %s", (data['slug'],))
         existing_record = cursor.fetchone()
 
         if existing_record:
@@ -54,7 +56,7 @@ def process_data(data):
                 data['category_id'],
                 data['image_url'],
                 data['image_description'],
-                data['slug']  # Ensure this is part of the tuple
+                data['slug']
             ))
             connection.commit()
             post_id = existing_record[0]
@@ -95,7 +97,8 @@ def process_data(data):
     finally:
         if cursor:
             cursor.close()
-        # Do not explicitly close the connection; it will be returned to the pool automatically
+        if connection:
+            connection.close()  # Return the connection to the pool
 
     # Convert tags to JSON format
     tags = data['tags']
